@@ -2,6 +2,7 @@ import 'package:example/demos/components/demo_text_with_hint.dart';
 import 'package:example/demos/components/demo_unselectable_hr.dart';
 import 'package:example/demos/debugging/simple_deltas_input.dart';
 import 'package:example/demos/demo_app_shortcuts.dart';
+import 'package:example/demos/demo_empty_document.dart';
 import 'package:example/demos/demo_rtl.dart';
 import 'package:example/demos/demo_markdown_serialization.dart';
 import 'package:example/demos/demo_paragraphs.dart';
@@ -35,13 +36,13 @@ import 'demos/supertextfield/android/demo_superandroidtextfield.dart';
 /// are available in this package.
 Future<void> main() async {
   initLoggers(Level.FINEST, {
-    // editorGesturesLog,
+    editorGesturesLog,
     // editorImeLog,
     // editorKeyLog,
     // editorOpsLog,
     // editorLayoutLog,
     // editorDocLog,
-    appLog,
+    // appLog,
   });
 
   runApp(SuperEditorDemoApp());
@@ -218,6 +219,13 @@ final _menu = <_MenuGroup>[
         title: 'RTL Demo',
         pageBuilder: (context) {
           return RTLDemo();
+        },
+      ),
+      _MenuItem(
+        icon: Icons.description,
+        title: 'Empty Document',
+        pageBuilder: (context) {
+          return EmptyDocumentDemo();
         },
       ),
     ],
