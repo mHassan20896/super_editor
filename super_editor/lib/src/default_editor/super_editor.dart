@@ -10,6 +10,7 @@ import 'package:super_editor/src/core/styles.dart';
 import 'package:super_editor/src/default_editor/common_editor_operations.dart';
 import 'package:super_editor/src/default_editor/document_gestures_touch_android.dart';
 import 'package:super_editor/src/default_editor/document_gestures_touch_ios.dart';
+import 'package:super_editor/src/default_editor/document_scrollable.dart';
 import 'package:super_editor/src/default_editor/list_items.dart';
 
 import 'attributions.dart';
@@ -264,6 +265,7 @@ class SuperEditorState extends State<SuperEditor> {
 
   late DocumentComposer _composer;
 
+  late AutoScrollController _autoScrollController;
   DocumentPosition? _previousSelectionExtent;
 
   @visibleForTesting
@@ -275,10 +277,12 @@ class SuperEditorState extends State<SuperEditor> {
   void initState() {
     super.initState();
 
+    _focusNode = (widget.focusNode ?? FocusNode())..addListener(_onFocusChange);
+
     _composer = widget.composer ?? DocumentComposer();
     _composer.addListener(_updateComposerPreferencesAtSelection);
 
-    _focusNode = (widget.focusNode ?? FocusNode())..addListener(_onFocusChange);
+    _autoScrollController = AutoScrollController();
 
     _docLayoutKey = widget.documentLayoutKey ?? GlobalKey();
 
@@ -503,14 +507,30 @@ class SuperEditorState extends State<SuperEditor> {
   }) {
     switch (_gestureMode) {
       case DocumentGestureMode.mouse:
-        return DocumentMouseInteractor(
-          focusNode: _focusNode,
-          editContext: editContext,
-          scrollController: widget.scrollController,
-          showDebugPaint: widget.debugPaint.gestures,
-          scrollingMinimapId: widget.debugPaint.scrollingMinimapId,
-          child: child,
-        );
+        return LayoutBuilder(builder: (context, constraints) {
+          return DocumentScrollable(
+            autoScroller: _autoScrollController,
+            scrollingMinimapId: widget.debugPaint.scrollingMinimapId,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                // When SuperEditor installs its own Viewport, we want the gesture
+                // detection to span throughout the Viewport. Because the gesture
+                // system sits around the DocumentLayout, within the Viewport, we
+                // have to explicitly tell the gesture area to be at least as tall
+                // as the viewport (in case the document content is shorter than
+                // the viewport).
+                minHeight: constraints.maxHeight < double.infinity ? constraints.maxHeight : 0,
+              ),
+              child: DocumentMouseInteractor(
+                focusNode: _focusNode,
+                editContext: editContext,
+                autoScroller: _autoScrollController,
+                showDebugPaint: widget.debugPaint.gestures,
+                child: child,
+              ),
+            ),
+          );
+        });
       case DocumentGestureMode.android:
         return AndroidDocumentTouchInteractor(
           focusNode: _focusNode,
