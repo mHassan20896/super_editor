@@ -8,6 +8,10 @@ import 'supereditor_robot.dart';
 
 void main() {
   group("SuperEditor gestures", () {
+    testWidgetsOnAllPlatforms("in an empty document places the caret when tapping in empty space", (tester) async {
+      // TODO:
+    });
+
     testWidgetsOnDesktop(
         "dragging a single component selection above a component selects to the beginning of the component",
         (tester) async {
