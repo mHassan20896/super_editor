@@ -38,7 +38,7 @@ void testWidgetsOnAllPlatforms(
   testWidgetsOnWindows("$description (on Windows)", test, skip: skip);
   testWidgetsOnLinux("$description (on Linux)", test, skip: skip);
   testWidgetsOnAndroid("$description (on Android)", test, skip: skip);
-  testWidgetsOnIos("$description (on iOS)", test, skip: skip);  
+  testWidgetsOnIos("$description (on iOS)", test, skip: skip);
 }
 
 /// A widget test that runs a variant for Windows and Linux.
@@ -66,6 +66,10 @@ void testWidgetsOnMac(
   testWidgets(description, (tester) async {
     Platform.setTestInstance(MacPlatform());
     debugDefaultTargetPlatformOverride = TargetPlatform.macOS;
+
+    tester.binding.window
+      ..devicePixelRatioTestValue = 1.0
+      ..platformDispatcher.textScaleFactorTestValue = 1.0;
 
     try {
       await test(tester);
@@ -111,6 +115,10 @@ void testWidgetsOnWindows(
     Platform.setTestInstance(WindowsPlatform());
     debugDefaultTargetPlatformOverride = TargetPlatform.windows;
 
+    tester.binding.window
+      ..devicePixelRatioTestValue = 1.0
+      ..platformDispatcher.textScaleFactorTestValue = 1.0;
+
     try {
       await test(tester);
     } finally {
@@ -154,6 +162,10 @@ void testWidgetsOnLinux(
   testWidgets(description, (tester) async {
     Platform.setTestInstance(LinuxPlatform());
     debugDefaultTargetPlatformOverride = TargetPlatform.linux;
+
+    tester.binding.window
+      ..devicePixelRatioTestValue = 1.0
+      ..platformDispatcher.textScaleFactorTestValue = 1.0;
 
     try {
       await test(tester);

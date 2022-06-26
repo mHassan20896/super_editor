@@ -73,6 +73,13 @@ class TestDocumentSelector {
       twoParagraphEmptyDoc(),
     );
   }
+
+  TestDocumentConfigurator withLongTextContent() {
+    return TestDocumentConfigurator._(
+      _widgetTester,
+      longTextDoc(),
+    );
+  }
 }
 
 /// Builder that configures and pumps a [SuperEditor] widget.
@@ -218,6 +225,7 @@ class TestDocumentConfigurator {
           SuperEditor(
             documentLayoutKey: testDocumentContext.layoutKey,
             editor: testDocumentContext.editContext.editor,
+            composer: testDocumentContext.editContext.composer,
             focusNode: testDocumentContext.focusNode,
             inputSource: _inputSource ?? _defaultInputSource,
             gestureMode: _gestureMode ?? _defaultGestureMode,
