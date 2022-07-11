@@ -411,7 +411,7 @@ class _InlineMarkdownToDocument implements md.NodeVisitor {
   }
 }
 
-extension on AttributedText {
+extension Markdown on AttributedText {
   /// Serializes style attributions into markdown syntax in a repeatable
   /// order such that opening and closing styles match each other on
   /// the opening and closing ends of a span.
